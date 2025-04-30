@@ -1,0 +1,15 @@
+/* 默认主题样式表 */
+.ime-window {
+    background: #F5F5F5;
+    border: 1px solid #E0E0E0;
+}
+
+.candidate-list {
+    font-size: 14px;
+    color: #333333;
+}
+
+.highlight {
+    background-color: #E3F2FD;
+    color: #1976D2;
+}

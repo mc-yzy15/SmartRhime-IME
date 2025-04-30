@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Setup Virtual Environment
+      run: |
+        python -m venv .venv
+        .venv\Scripts\pip install -r requirements.txt
+
+    - name: Merge dictionaries
+      run: |
+        .venv\Scripts\python scripts/merge_dicts.py -i dict -o merged_dict.txt
+
+    - name: Build solution
+      run: |
+        msbuild PinYin-Input.sln /p:Configuration=Release
+
+    - name: Archive artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-package
+        path: |
+          bin/Release/*.exe
+          merged_dict.txt
+          install.bat

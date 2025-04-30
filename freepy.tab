@@ -1,0 +1,9 @@
+# 核心词库格式v2
+# 最后更新时间: 2024-02-20
+# 字段说明: 拼音|汉字|基础词频|最后更新时间|模糊拼音组合
+
+pinyin|hanzi|base_freq|last_updated|fuzzy_pinyins
+zhongguo|中国|1000|2024-02-20|zg;zhongg
+beijing|北京|800|2024-02-20|bj
+shanghai|上海|750|2024-02-20|sh
+...

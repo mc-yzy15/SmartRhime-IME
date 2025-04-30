@@ -1,0 +1,9 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\E0200804]
+"IME File"="freepy.ime"
+"Layout Text"="自由拼音输入法"
+"Layout File"="kbdus.dll"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\freepy]
+"InstallPath"="%SystemRoot%\system32"

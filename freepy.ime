@@ -1,0 +1,70 @@
+#include <windows.h>
+#include <imm.h>
+
+// IME 入口函数
+BOOL WINAPI ImeInquire(LPIMEINFO lpImeInfo, LPWSTR lpszUIClass, LPCWSTR lpszOption)
+{
+    // 初始化IME信息
+    lpImeInfo->dwPrivateDataSize = 0;
+    lpImeInfo->fdwProperty = IME_PROP_AT_CARET | IME_PROP_SPECIAL_UI;
+    lpImeInfo->fdwConversionCaps = IME_CMODE_NATIVE | IME_CMODE_FULLSHAPE;
+    lpImeInfo->fdwSentenceCaps = 0;
+    lpImeInfo->fdwUICaps = UI_CAP_ROT90;
+    lpImeInfo->fdwSCSCaps = 0;
+    lpImeInfo->fdwSelectCaps = SELECT_CAP_CONVERSION;
+    
+    // 设置UI窗口类名
+    wcscpy_s(lpszUIClass, IME_MAX_CLASS_NAME, L"FreePYUI");
+    
+    return TRUE;
+}
+
+// IME 处理函数
+LRESULT WINAPI ImeProcessKey(HIMC hIMC, UINT uVirKey, LPARAM lParam, CONST LPBYTE lpbKeyState)
+{
+    // 处理按键输入
+    return 0;
+}
+
+// IME 转换函数
+LRESULT WINAPI ImeToAsciiEx(UINT uVirKey, UINT uScanCode, CONST LPBYTE lpbKeyState, LPTRANSMSGLIST lpTransMsgList, UINT fuState, HIMC hIMC)
+{
+    // 处理输入转换
+    return 0;
+}
+
+
+// 新增智能纠错模块
+void SmartCorrection(const WCHAR* input, WCHAR* output) {
+    // 实现常见拼音错误自动修正（zhongg -> zhongguo）
+    // TODO: 接入机器学习模型
+}
+
+// 新增云端请求模块
+void CloudRequest(const char* pinyin, vector<string>& candidates) {
+    // 实现HTTP请求获取云端候选词
+    // TODO: 配置实际服务器地址
+}
+
+
+// 用户词库加载模块
+void LoadUserDict() {
+    // 从系统目录加载userdict.dat
+    WCHAR sysPath[MAX_PATH];
+    GetSystemDirectory(sysPath, MAX_PATH);
+    wstring dictPath = wstring(sysPath) + L"\\userdict.dat";
+    
+    // 读取词库文件并加载到内存
+    // TODO: 实现文件解析逻辑
+}
+
+// 用户词库保存模块
+void SaveUserDict() {
+    // 将内存中的用户词库保存到文件
+    // TODO: 实现定时保存机制
+}
+
+// 在IME初始化时加载词库
+BOOL WINAPI ImeInquire(LPIMEINFO lpImeInfo, LPWSTR lpszUIClass, LPCWSTR lpszOption) {
+    LoadUserDict();
+    // ... existing code ...

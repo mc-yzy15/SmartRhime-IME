@@ -1,0 +1,17 @@
+自由拼音输入法 帮助文档
+
+=== 安装说明 ===
+1. 运行register.reg文件注册输入法
+2. 将freepy.ime、freepy.tab和freepy.hlp文件复制到系统目录(如C:\Windows\System32)
+3. 通过控制面板添加输入法
+
+=== 使用说明 ===
+1. 按Ctrl+Space切换输入法
+2. 输入拼音后按空格键确认
+3. 使用数字键选择候选词
+4. 按PageUp/PageDown翻页
+
+=== 词库管理 ===
+1. 系统词库: freepy.tab
+2. 用户词库: freepyusr.dic (自动生成)
+3. 词库格式: 拼音 汉字 词频

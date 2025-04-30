@@ -1,0 +1,5 @@
+# 用户词库格式
+# 最后修改时间: 2024-02-20
+# 字段说明: 拼音|汉字|使用频率|最后使用时间
+
+pinyin|hanzi|frequency|last_used_time
