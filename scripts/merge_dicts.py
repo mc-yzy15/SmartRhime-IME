@@ -19,7 +19,7 @@ def merge_dicts(input_dir, output_file):
                         for word in words:
                             # 生成标准拼音和多音字组合
                             base_pinyin = ' '.join(lazy_pinyin(word, style=Style.NORMAL))
-                            fuzzy_pinyins = ';'.join({p for p in lazy_pinyin(word, style=Style.NORMAL, heteronym=True)})
+                            fuzzy_pinyins = ';'.join({p for p in lazy_pinyin(word, style=Style.NORMAL, heteronym=True, strict=False)})
                             
                             word_freq[(word, base_pinyin)] = {
                                 'freq': int(line.split('\t')[1]) if '\t' in line else 1,
