@@ -71,7 +71,7 @@ python scripts/merge_dicts.py --add dict/THUOCL_IT.txt
 
 ## 授权协议
 
-版权所有 (c) 2024-2025 mc-yzy15 (yaoziying@yzit7.wecom.work)
+版权所有 (c) 2024-2025 mc-yzy15 (<yaoziying@yzit7.wecom.work>)
 本程序是专有软件，未经明确授权不得：
 
 - 逆向工程
@@ -80,5 +80,5 @@ python scripts/merge_dicts.py --add dict/THUOCL_IT.txt
 
 ## 技术支持
 
-联系邮箱：<public@yzit7.wecom.work>（备用：yingmoliuguang@yeah.net）
+联系邮箱：<public@yzit7.wecom.work>（备用：<yingmoliuguang@yeah.net>）
 紧急问题请提交Issues
