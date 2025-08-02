@@ -131,7 +131,77 @@ public:
 
     // 加载用户词库
     void loadUserDictionary() {
-        // 实现用户词库加载逻辑
+        std::ifstream file(m_userDictPath);
+        if (!file.is_open()) {
+            // 如果用户词库不存在，创建一个空文件
+            std::ofstream newFile(m_userDictPath);
+            newFile.close();
+            return;
+        }
+
+        std::string line;
+        while (std::getline(file, line)) {
+            if (line.empty() || line[0] == '#') continue;
+
+            size_t tabPos = line.find('	');
+            if (tabPos == std::string::npos) continue;
+
+            std::string word = line.substr(0, tabPos);
+            int freq = std::stoi(line.substr(tabPos + 1));
+
+            // 获取词语的拼音
+            std::string pinyin = getWordPinyin(word);
+            if (!pinyin.empty()) {
+                m_pinyinToWords[pinyin].push_back({word, freq});
+            }
+        }
+
+        file.close();
+    }
+
+    // 保存用户词库
+    void saveUserDictionary() {
+        std::ofstream file(m_userDictPath);
+        if (!file.is_open()) {
+            std::cerr << "无法打开用户词库文件进行写入: " << m_userDictPath << std::endl;
+            return;
+        }
+
+        // 写入用户词库头部信息
+        file << "# 用户词库 - 由SmartRhime输入法自动生成\n";
+
+        // 遍历所有词语
+        for (const auto& entry : m_pinyinToWords) {
+            for (const auto& pair : entry.second) {
+                // 只保存用户添加的词语（可以通过词频阈值判断）
+                if (pair.second > 1000) {
+                    file << pair.first << '\t' << pair.second << '\n';
+                }
+            }
+        }
+
+        file.close();
+    }
+
+    // 添加用户词语
+    void addUserWord(const std::string& word, int freq = 2000) {
+        std::string pinyin = getWordPinyin(word);
+        if (!pinyin.empty()) {
+            // 检查词语是否已存在
+            auto& words = m_pinyinToWords[pinyin];
+            for (auto& pair : words) {
+                if (pair.first == word) {
+                    // 更新词频
+                    pair.second = std::max(pair.second + 10, freq);
+                    saveUserDictionary();
+                    return;
+                }
+            }
+
+            // 添加新词
+            words.push_back({word, freq});
+            saveUserDictionary();
+        }
     }
 
     // 获取汉字的拼音
@@ -160,10 +230,66 @@ public:
         return pinyin;
     }
 
-    // 根据拼音查找候选词
+    // 计算Levenshtein距离（字符串相似度）
+    int levenshteinDistance(const std::string& s1, const std::string& s2) {
+        const int m = s1.length();
+        const int n = s2.length();
+
+        // 创建距离矩阵
+        std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, 0));
+
+        // 初始化边界
+        for (int i = 0; i <= m; ++i) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= n; ++j) {
+            dp[0][j] = j;
+        }
+
+        // 填充矩阵
+        for (int i = 1; i <= m; ++i) {
+            for (int j = 1; j <= n; ++j) {
+                int cost = (s1[i-1] == s2[j-1]) ? 0 : 1;
+                dp[i][j] = std::min({dp[i-1][j] + 1,        // 删除
+                                     dp[i][j-1] + 1,        // 插入
+                                     dp[i-1][j-1] + cost}); // 替换
+            }
+        }
+
+        return dp[m][n];
+    }
+
+    // 智能拼音纠错
+    std::string correctPinyin(const std::string& pinyin) {
+        // 如果拼音已经存在于词库中，直接返回
+        if (m_pinyinToWords.find(pinyin) != m_pinyinToWords.end()) {
+            return pinyin;
+        }
+
+        // 查找最相似的拼音
+        std::string bestMatch;
+        int minDistance = INT_MAX;
+
+        for (const auto& entry : m_pinyinToWords) {
+            const std::string& candidate = entry.first;
+            int distance = levenshteinDistance(pinyin, candidate);
+
+            // 如果找到更相似的拼音，更新最佳匹配
+            if (distance < minDistance) {
+                minDistance = distance;
+                bestMatch = candidate;
+            }
+        }
+
+        // 只有当距离足够小时才返回纠错结果
+        return (minDistance <= 2) ? bestMatch : pinyin;
+    }
+
+    // 根据拼音查找候选词（带智能纠错）
     std::vector<std::string> findCandidates(const std::string& pinyin) {
         std::vector<std::string> candidates;
 
+        // 尝试直接查找
         if (m_pinyinToWords.find(pinyin) != m_pinyinToWords.end()) {
             // 按词频排序
             std::vector<std::pair<std::string, int>>& words = m_pinyinToWords[pinyin];
@@ -174,6 +300,21 @@ public:
             // 提取排好序的词语
             for (const auto& pair : words) {
                 candidates.push_back(pair.first);
+            }
+        } else if (!candidates.empty()) {
+            // 如果没有找到，尝试智能纠错
+            std::string correctedPinyin = correctPinyin(pinyin);
+            if (correctedPinyin != pinyin && m_pinyinToWords.find(correctedPinyin) != m_pinyinToWords.end()) {
+                // 按词频排序
+                std::vector<std::pair<std::string, int>>& words = m_pinyinToWords[correctedPinyin];
+                std::sort(words.begin(), words.end(), [](const auto& a, const auto& b) {
+                    return a.second > b.second;
+                });
+
+                // 提取排好序的词语
+                for (const auto& pair : words) {
+                    candidates.push_back(pair.first);
+                }
             }
         }
 

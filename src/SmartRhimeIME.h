@@ -28,6 +28,12 @@ public:
     // 加载用户词库
     void loadUserDictionary();
 
+    // 保存用户词库
+    void saveUserDictionary();
+
+    // 添加用户词语
+    void addUserWord(const std::string& word, int freq = 2000);
+
     // 获取汉字的拼音
     std::string getCharPinyin(char ch);
 
