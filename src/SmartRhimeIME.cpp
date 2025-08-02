@@ -18,18 +18,75 @@ private:
 public:
     SmartRhimeIME() : m_userDictPath("userdict.dat") {
         // 初始化拼音字典
-        initPinyinDict();
-        // 加载词库
-        loadDictionaries();
+    initPinyinDict();
+
+    // 加载词库
+    loadDictionaries();
     }
 
     // 初始化基础拼音字典
-    void initPinyinDict() {
-        // 这里可以实现类似pinyin_utils.py的拼音字典
+    void SmartRhimeIME::initPinyinDict() {
+        // 完整拼音字典
+        m_pinyinDict["一"] = {"yi"};
+        m_pinyinDict["丁"] = {"ding"};
+        m_pinyinDict["七"] = {"qi"};
+        m_pinyinDict["八"] = {"ba"};
+        m_pinyinDict["九"] = {"jiu"};
+        m_pinyinDict["十"] = {"shi"};
+        m_pinyinDict["百"] = {"bai"};
+        m_pinyinDict["千"] = {"qian"};
+        m_pinyinDict["万"] = {"wan"};
+        m_pinyinDict["亿"] = {"yi"};
+        m_pinyinDict["个"] = {"ge"};
+        m_pinyinDict["十"] = {"shi"};
+        m_pinyinDict["百"] = {"bai"};
+        m_pinyinDict["千"] = {"qian"};
+        m_pinyinDict["万"] = {"wan"};
+        m_pinyinDict["亿"] = {"yi"};
         m_pinyinDict["长"] = {"chang", "zhang"};
         m_pinyinDict["都"] = {"du", "dou"};
         m_pinyinDict["中"] = {"zhong"};
         m_pinyinDict["国"] = {"guo"};
+        m_pinyinDict["北"] = {"bei"};
+        m_pinyinDict["京"] = {"jing"};
+        m_pinyinDict["上"] = {"shang"};
+        m_pinyinDict["海"] = {"hai"};
+        m_pinyinDict["重"] = {"zhong", "chong"};
+        m_pinyinDict["行"] = {"xing", "hang"};
+        m_pinyinDict["人"] = {"ren"};
+        m_pinyinDict["口"] = {"kou"};
+        m_pinyinDict["手"] = {"shou"};
+        m_pinyinDict["足"] = {"zu"};
+        m_pinyinDict["目"] = {"mu"};
+        m_pinyinDict["耳"] = {"er"};
+        m_pinyinDict["鼻"] = {"bi"};
+        m_pinyinDict["舌"] = {"she"};
+        m_pinyinDict["心"] = {"xin"};
+        m_pinyinDict["肝"] = {"gan"};
+        m_pinyinDict["脾"] = {"pi"};
+        m_pinyinDict["肺"] = {"fei"};
+        m_pinyinDict["肾"] = {"shen"};
+        m_pinyinDict["金"] = {"jin"};
+        m_pinyinDict["木"] = {"mu"};
+        m_pinyinDict["水"] = {"shui"};
+        m_pinyinDict["火"] = {"huo"};
+        m_pinyinDict["土"] = {"tu"};
+        m_pinyinDict["东"] = {"dong"};
+        m_pinyinDict["南"] = {"nan"};
+        m_pinyinDict["西"] = {"xi"};
+        m_pinyinDict["北"] = {"bei"};
+        m_pinyinDict["中"] = {"zhong"};
+        m_pinyinDict["天"] = {"tian"};
+        m_pinyinDict["地"] = {"di"};
+        m_pinyinDict["日"] = {"ri"};
+        m_pinyinDict["月"] = {"yue"};
+        m_pinyinDict["星"] = {"xing"};
+        m_pinyinDict["风"] = {"feng"};
+        m_pinyinDict["云"] = {"yun"};
+        m_pinyinDict["雨"] = {"yu"};
+        m_pinyinDict["雪"] = {"xue"};
+        m_pinyinDict["雷"] = {"lei"};
+        m_pinyinDict["电"] = {"dian"};
         // 可以继续添加更多汉字的拼音
     }
 
