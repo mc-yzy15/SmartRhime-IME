@@ -45,10 +45,10 @@
 
 ```bash
 # 更新核心词库
-python scripts/merge_dicts.py --update
+set PYTHONPATH=f:\Users\Yzy15\Documents\Proginn\SmartRhime-IME && python scripts/merge_dicts.py --update
 
-# 添加自定义词库
-python scripts/merge_dicts.py --add dict/THUOCL_IT.txt
+# 添加自定义词库  
+set PYTHONPATH=f:\Users\Yzy15\Documents\Proginn\SmartRhime-IME && python scripts/merge_dicts.py --add dict/THUOCL_IT.txt
 ```
 
 ## 开发规范

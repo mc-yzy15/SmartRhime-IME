@@ -3,32 +3,47 @@ import argparse
 from collections import defaultdict
 
 def merge_dicts(input_dir, output_file):
-    from pypinyin import lazy_pinyin, Style
     import jieba
+    from scripts.pinyin_utils import get_pinyin
     
-    word_freq = defaultdict(int)
+    word_freq = defaultdict(dict)
     
     for filename in os.listdir(input_dir):
         if filename.endswith('.txt'):
-            with open(os.path.join(input_dir, filename), 'r', encoding='utf-8') as f:
+            file_path = os.path.join(input_dir, filename)
+            with open(file_path, 'r', encoding='utf-8') as f:
                 for line in f:
                     line = line.strip()
-                    if line:
-                        # 智能分词处理
-                        words = jieba.lcut(line.split('\t')[0] if '\t' in line else line)
-                        for word in words:
-                            # 生成标准拼音和多音字组合
-                            base_pinyin = ' '.join(lazy_pinyin(word, style=Style.NORMAL))
-                            fuzzy_pinyins = ';'.join({p for p in lazy_pinyin(word, style=Style.NORMAL, heteronym=True, strict=False)})
-                            
-                            word_freq[(word, base_pinyin)] = {
-                                'freq': int(line.split('\t')[1]) if '\t' in line else 1,
+                    if not line or line.startswith('#'):
+                        continue
+                    
+                    parts = line.split('\t')
+                    if len(parts) >= 2:
+                        word, freq = parts[0], int(parts[1])
+                    else:
+                        word, freq = parts[0], 1
+                    
+                    # 使用jieba分词
+                    seg_list = jieba.cut(word)
+                    for seg_word in seg_list:
+                        if len(seg_word) < 2:
+                            continue
+                        
+                        base_pinyin, fuzzy_pinyins = get_pinyin(seg_word)
+                        key = (seg_word, base_pinyin)
+                        
+                        if key not in word_freq:
+                            word_freq[key] = {
+                                'freq': 0,
                                 'fuzzy': fuzzy_pinyins
                             }
+                        word_freq[key]['freq'] += freq
     
     with open(output_file, 'w', encoding='utf-8') as f:
-        for word, freq in sorted(word_freq.items(), key=lambda x: (-x[1], x[0])):
-            f.write(f'{word}\t{freq}\n')
+        # 先按词频降序，再按词语拼音升序排序
+        sorted_items = sorted(word_freq.items(), key=lambda x: (-x[1]['freq'], x[0][1]))
+        for (word, pinyin), data in sorted_items:
+            f.write(f'{pinyin}|{word}|{data["freq"]}|{data["fuzzy"]}\n')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='合并词库文件')
