@@ -1,10 +1,8 @@
-# SmartRhime-IME 智韵输入法
+# 智韵拼音输入法
 
-![输入法演示](screenshots/preview.gif)
+## 项目概述
 
-## 项目描述
-
-智能拼音输入法解决方案，支持词库热更新和个性化皮肤功能。采用混合算法模型实现高精度输入预测，包含40万条核心词库和20个专业领域词库。
+本项目是智能拼音输入法的C++实现版本，**完全不依赖Python运行时**。采用Windows IMM API开发，支持词库热更新和个性化皮肤功能。采用混合算法模型实现高精度输入预测，包含40万条核心词库和20个专业领域词库。
 
 ## 功能特性
 
@@ -15,70 +13,99 @@
 - 增量词库更新机制
 - 用户词典云同步
 
-## 安装指南
-
-### 系统要求
+## 开发环境
 
 - Windows 10/11 64位
-- .NET Framework 4.8
-- Python 3.10+（用于词库管理）
+- MinGW-w64 (推荐8.1.0及以上版本)
+- C++17 兼容编译器
+- Qt 6.9.1 (可选，用于皮肤系统开发)
 
-### 安装步骤
+## 项目结构
 
-1. 右键单击`install.bat`选择"以管理员身份运行"
-2. 同意UAC权限提示
-3. 等待自动完成以下操作：
-   - 注册输入法组件
-   - 部署运行时文件到%SystemRoot%\system32
-   - 创建Python虚拟环境
-   - 安装依赖包
-4. 通过控制面板 > 语言 > 输入法设置添加"智韵输入法"
+```
+SmartRhime-IME/
+├── src/
+│   ├── SmartRhimeIME.cpp   // 核心实现
+│   └── SmartRhimeIME.h     // 头文件
+├── dict/                   // 词库文件
+├── Skins/                  // 皮肤文件
+│   └── default/
+│       └── theme.css
+├── Makefile                // 编译配置
+├── build.bat               // 编译和安装脚本
+├── install.bat             // 安装脚本
+├── register.reg            // 注册表配置
+├── freepy.hlp              // 帮助文件
+├── freepy.tab              // 词库文件
+├── userdict.dat            // 用户词典
+└── README_CPP.md           // C++版本说明
+```
+
+## 编译和安装
+
+1. 确保已安装MinGW-w64并添加到系统环境变量
+   - MinGW路径: C:\Qt\6.9.1\mingw_64\bin
+2. 双击运行`build.bat`批处理文件
+3. 按照提示完成编译和安装
+4. 通过控制面板 > 语言 > 输入法设置添加"自由拼音输入法"
 
 ## 使用说明
 
 ### 输入法切换
-
-- `Ctrl + Shift`：循环切换输入法
-- `Win + Space`：直接切换至智韵输入法
+- `Ctrl + Shift`: 循环切换输入法
+- `Win + Space`: 直接切换至自由拼音输入法
 
 ### 词库管理
 
-```bash
-# 更新核心词库
-set PYTHONPATH=f:\Users\Yzy15\Documents\Proginn\SmartRhime-IME && python scripts/merge_dicts.py --update
+词库位于`dict/`目录下，格式为`词语\t词频`。可以添加自定义词库文件，编译时会自动加载。
 
-# 添加自定义词库  
-set PYTHONPATH=f:\Users\Yzy15\Documents\Proginn\SmartRhime-IME && python scripts/merge_dicts.py --add dict/THUOCL_IT.txt
-```
+## 开发说明
 
-## 开发规范
+### 核心类
 
-### 分支策略
+- `SmartRhimeIME`: 智能拼音输入法的核心类，负责词库加载、拼音转换和候选词生成
 
-- `main`：稳定版本
-- `dev`：功能开发分支
-- `hotfix-*`：紧急修复分支
+### 主要功能实现
 
-### 提交规范
+1. **拼音转换**: 
+   - 使用内置的拼音字典实现汉字到拼音的转换
+   - 支持多音字处理
 
-```text
-类型(范围): 简要描述
+2. **词库管理**: 
+   - 从`dict/`目录加载所有词库文件
+   - 支持用户词典
 
-详细说明（可选）
+3. **候选词生成**: 
+   - 根据输入的拼音查找匹配的词语
+   - 基于词频进行排序
 
-关联Issue：#123
-```
+4. **智能排序**: 
+   - 根据用户输入习惯动态调整词频
 
-## 授权协议
+### 扩展开发
 
-版权所有 (c) 2024-2025 mc-yzy15 (<yaoziying@yzit7.wecom.work>)
-本程序是专有软件，未经明确授权不得：
+#### 皮肤系统
+皮肤系统使用CSS进行定制，位于`Skins/`目录下。可以创建新的皮肤文件夹并修改`theme.css`文件。
 
-- 逆向工程
-- 重新分发
-- 商业性使用
+#### 词库扩展
+可以在`dict/`目录下添加新的词库文件，格式为`词语\t词频`。
+
+## 调试和测试
+
+1. 使用MinGW调试器进行代码调试
+2. 通过`freepy.tab`文件查看和修改词库
+3. 使用Windows的"文字服务和输入语言"控制面板进行输入法测试
+
+## 注意事项
+
+- 编译前请确保MinGW已正确安装并配置
+- MinGW路径应为: C:\Qt\6.9.1\mingw_64\bin
+- 如需使用Qt开发皮肤系统，请确保Qt 6.9.1已正确安装
 
 ## 技术支持
 
-联系邮箱：<public@yzit7.wecom.work>（备用：<yingmoliuguang@yeah.net>）
-紧急问题请提交Issues
+- 邮箱: yingmoliuguang@yeah.net
+- GitHub: https://github.com/mc-yzy15
+- Bilibili: https://space.bilibili.com/1338637552
+- CSDN: https://blog.csdn.net/m0_68339835
+- 个人博客: https://home159263.wordpress.com/
